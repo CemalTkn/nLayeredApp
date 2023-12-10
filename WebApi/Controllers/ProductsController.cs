@@ -18,17 +18,17 @@ namespace WebApi.Controllers
             _productService = productService;
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] CreateProductRequest createProductRequest)
         {
             var result = await _productService.Add(createProductRequest);
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetList()
         {
-            var result = _productService.GetListAsync();
+            var result = await _productService.GetListAsync();
             return Ok(result);
         }
     }
