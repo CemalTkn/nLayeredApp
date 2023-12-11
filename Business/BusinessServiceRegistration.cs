@@ -1,6 +1,7 @@
 ﻿
 using Business.Abstracts;
 using Business.Concretes;
+using Business.Rules;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace Business
         public static IServiceCollection AddBusinessServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddScoped<CategoryBusinessRules>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;
         }

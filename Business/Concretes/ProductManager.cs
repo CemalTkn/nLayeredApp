@@ -5,6 +5,7 @@ using Business.Dtos.Responses;
 using Core.DataAccess.Paging;
 using DataAccess.Abstracts;
 using Entities.Concretes;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,21 +27,21 @@ namespace Business.Concretes
 
         public async Task<CreatedProductResponse> Add(CreateProductRequest createProductRequest)
         {
-           //Product product = new Product();
-           //product.Id = Guid.NewGuid();
-           //product.ProductName = createProductRequest.ProductName;
-           //product.UnitPrice = createProductRequest.UnitPrice;
-           //product.QuantityPerUnit = createProductRequest.QuantityPerUnit;
-           //product.UnitsInStock = createProductRequest.UnitsInStock;
+            //Product product = new Product();
+            //product.Id = Guid.NewGuid();
+            //product.ProductName = createProductRequest.ProductName;
+            //product.UnitPrice = createProductRequest.UnitPrice;
+            //product.QuantityPerUnit = createProductRequest.QuantityPerUnit;
+            //product.UnitsInStock = createProductRequest.UnitsInStock;
 
-           //Product createdProduct = await _productDal.AddAsync(product);
-  
-           //CreatedProductResponse createdProductResponse = new CreatedProductResponse();
-           //createdProductResponse.Id = createdProduct.Id;
-           //createdProductResponse.ProductName = createdProduct.ProductName;
-           //createdProductResponse.UnitPrice = createdProduct.UnitPrice;
-           //createdProductResponse.QuantityPerUnit = createdProduct.QuantityPerUnit;
-           //createdProductResponse.UnitsInStock = createdProduct.UnitsInStock;
+            //Product createdProduct = await _productDal.AddAsync(product);
+
+            //CreatedProductResponse createdProductResponse = new CreatedProductResponse();
+            //createdProductResponse.Id = createdProduct.Id;
+            //createdProductResponse.ProductName = createdProduct.ProductName;
+            //createdProductResponse.UnitPrice = createdProduct.UnitPrice;
+            //createdProductResponse.QuantityPerUnit = createdProduct.QuantityPerUnit;
+            //createdProductResponse.UnitsInStock = createdProduct.UnitsInStock;
 
             Product product = _mapper.Map<Product>(createProductRequest);
             Product createdProduct = await _productDal.AddAsync(product);
@@ -48,11 +49,16 @@ namespace Business.Concretes
             return createdProductResponse;
         }
 
-        public async Task<GetListResponse> GetListAsync()
+        public async Task<IPaginate<GetListProductResponse>> GetListAsync(PageRequest pageRequest)
         {
-            IPaginate<Product> products = await _productDal.GetListAsync();
-            GetListResponse mapped = _mapper.Map<GetListResponse>(products);
-            return mapped;
+            var data = await _productDal.GetListAsync(
+                include:p=>p.Include(p=>p.Category),
+                index: pageRequest.PageIndex,
+                size: pageRequest.PageSize
+                );
+
+            var result = _mapper.Map<Paginate<GetListProductResponse>>(data);
+            return result;
         }
     }
 }

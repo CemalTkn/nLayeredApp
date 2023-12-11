@@ -21,6 +21,7 @@ namespace DataAccess
             services.AddDbContext<NorthwindContext>(options => options.UseSqlServer(configuration.GetConnectionString("ETradeC")));
 
             services.AddScoped<IProductDal, EfProductDal>();
+            services.AddScoped<ICategoryDal, EfCategoryDal>();
             return services;
 
             
