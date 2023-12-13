@@ -15,10 +15,13 @@ namespace Business.Profiles
     {
         public ProductMapping()
         {
-            CreateMap<Product, GetListProductResponse>().ForMember(destinationMember: p => p.CategoryName, memberOptions: opt => opt.MapFrom(p => p.Category.Name)).ReverseMap();
             CreateMap<CreateProductRequest, Product>();
             CreateMap<Product, CreatedProductResponse>();
-            CreateMap<IPaginate<Product>, GetListProductResponse>();
+            //GetListResponse İçin
+
+            CreateMap<Product, GetListProductResponse>().ForMember(destinationMember: p => p.CategoryName, memberOptions: opt => opt.MapFrom(p => p.Category.Name)).ReverseMap();
+            CreateMap<Paginate<Product>, Paginate<GetListProductResponse>>();
+            //CreateMap<UpdateProductRequest, Product>();
         }
     }
 }

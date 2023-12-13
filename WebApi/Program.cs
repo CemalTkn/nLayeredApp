@@ -1,4 +1,5 @@
 using Business;
+using Core.CrossCuttingConcerns.Exceptions.Extensions;
 using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
 builder.Services.AddBusinessServices();
 builder.Services.AddDataAccessServices(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -22,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.ConfigureCustomExceptionMiddleware();
 
 app.UseAuthorization();
 

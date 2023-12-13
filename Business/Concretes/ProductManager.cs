@@ -2,6 +2,7 @@
 using Business.Abstracts;
 using Business.Dtos.Requests;
 using Business.Dtos.Responses;
+using Business.Rules;
 using Core.DataAccess.Paging;
 using DataAccess.Abstracts;
 using Entities.Concretes;
@@ -18,31 +19,18 @@ namespace Business.Concretes
     {
         IProductDal _productDal;
         IMapper _mapper;
+        ProductBusinessRules _rules;
 
-        public ProductManager(IProductDal productDal, IMapper mapper)
+        public ProductManager(IProductDal productDal, IMapper mapper, ProductBusinessRules rules)
         {
             _productDal = productDal;
             _mapper = mapper;
+            _rules = rules;
         }
 
         public async Task<CreatedProductResponse> Add(CreateProductRequest createProductRequest)
         {
-            //Product product = new Product();
-            //product.Id = Guid.NewGuid();
-            //product.ProductName = createProductRequest.ProductName;
-            //product.UnitPrice = createProductRequest.UnitPrice;
-            //product.QuantityPerUnit = createProductRequest.QuantityPerUnit;
-            //product.UnitsInStock = createProductRequest.UnitsInStock;
-
-            //Product createdProduct = await _productDal.AddAsync(product);
-
-            //CreatedProductResponse createdProductResponse = new CreatedProductResponse();
-            //createdProductResponse.Id = createdProduct.Id;
-            //createdProductResponse.ProductName = createdProduct.ProductName;
-            //createdProductResponse.UnitPrice = createdProduct.UnitPrice;
-            //createdProductResponse.QuantityPerUnit = createdProduct.QuantityPerUnit;
-            //createdProductResponse.UnitsInStock = createdProduct.UnitsInStock;
-
+            await _rules.MaximumProductCountIsTwenty(createProductRequest.CategoryId);
             Product product = _mapper.Map<Product>(createProductRequest);
             Product createdProduct = await _productDal.AddAsync(product);
             CreatedProductResponse createdProductResponse = _mapper.Map<CreatedProductResponse>(createdProduct);
